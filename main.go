@@ -3,7 +3,6 @@ package main
 import (
 	"interview-follow/db"
 	"interview-follow/router"
-	"interview-follow/validation"
 	"log"
 	"os"
 
@@ -28,9 +27,6 @@ func main() {
 
 	// Connect to DB
 	db.Init()
-
-	// Init Validation
-	validation.Init()
 
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
