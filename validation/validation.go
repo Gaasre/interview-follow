@@ -1,6 +1,8 @@
 package validation
 
 import (
+	"interview-follow/models"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
@@ -35,4 +37,20 @@ func ValidateBody[T any](c *fiber.Ctx, payload T) error {
 	}
 
 	return c.Next()
+}
+
+func ValidateLogin(c *fiber.Ctx) error {
+	return ValidateBody(c, new(models.LoginRequest))
+}
+
+func ValidateSignup(c *fiber.Ctx) error {
+	return ValidateBody(c, new(models.SignupRequest))
+}
+
+func ValidateNewApplication(c *fiber.Ctx) error {
+	return ValidateBody(c, new(models.ApplicationRequest))
+}
+
+func ValidateEditApplication(c *fiber.Ctx) error {
+	return ValidateBody(c, new(models.ApplicationRequest))
 }
