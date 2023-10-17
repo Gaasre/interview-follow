@@ -11,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func DeseializeUser(c *fiber.Ctx) error {
+func DeserializeUser(c *fiber.Ctx) error {
 	var token string
 	authorization := c.Get("Authorization")
 

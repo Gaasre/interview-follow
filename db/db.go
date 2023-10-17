@@ -21,7 +21,7 @@ func Init() *gorm.DB {
 
 	log.Println("Connection to database open")
 
-	Database.AutoMigrate((&models.User{}))
+	Database.AutoMigrate((&models.User{}), (&models.Application{}))
 	log.Println("Database migrated")
 
 	return nil

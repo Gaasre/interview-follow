@@ -17,22 +17,12 @@ import (
 func SetupUserRoutes(router fiber.Router) {
 	user := router.Group("/user")
 
+	// TODO: Remove this
 	// Read all users
-	user.Get("/all", middleware.DeseializeUser, func(c *fiber.Ctx) error {
-		return GetUsers(c)
-	})
-
-	user.Get("/self", middleware.DeseializeUser, func(c *fiber.Ctx) error {
-		return GetSelf(c)
-	})
-
-	user.Post("/login", validation.ValidateLogin, func(c *fiber.Ctx) error {
-		return Login(c)
-	})
-
-	user.Post("/signup", validation.ValidateSignup, func(c *fiber.Ctx) error {
-		return SignUp(c)
-	})
+	user.Get("/all", middleware.DeserializeUser, GetUsers)
+	user.Get("/self", middleware.DeserializeUser, GetSelf)
+	user.Post("/login", validation.ValidateLogin, Login)
+	user.Post("/signup", validation.ValidateSignup, SignUp)
 }
 
 func hashPassword(password string) (string, error) {
