@@ -5,6 +5,7 @@ import (
 	"interview-follow/db"
 	"interview-follow/middleware"
 	"interview-follow/models"
+	"interview-follow/types"
 	"interview-follow/validation"
 	"time"
 
@@ -17,9 +18,6 @@ import (
 func SetupUserRoutes(router fiber.Router) {
 	user := router.Group("/user")
 
-	// TODO: Remove this
-	// Read all users
-	user.Get("/all", middleware.DeserializeUser, GetUsers)
 	user.Get("/self", middleware.DeserializeUser, GetSelf)
 	user.Post("/login", validation.ValidateLogin, Login)
 	user.Post("/signup", validation.ValidateSignup, SignUp)
@@ -37,7 +35,7 @@ func CheckPasswordHash(password, hash string) bool {
 
 func GetSelf(c *fiber.Ctx) error {
 	user := c.Locals("user").(models.UserResponse)
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "data": user})
+	return c.Status(fiber.StatusOK).JSON(types.UserSuccess(user))
 }
 
 func Login(c *fiber.Ctx) error {
@@ -48,11 +46,11 @@ func Login(c *fiber.Ctx) error {
 	result := db.Database.Where("email = ?", body.Email).First(&user)
 
 	if result.RowsAffected == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "Invalid Credentials"})
+		return c.Status(fiber.StatusBadRequest).JSON(types.InvalidCredentials)
 	}
 
 	if !CheckPasswordHash(body.Password, user.HashedPassword) {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "Invalid Credentials"})
+		return c.Status(fiber.StatusBadRequest).JSON(types.InvalidCredentials)
 	}
 
 	// Generate JWT Token
@@ -68,7 +66,7 @@ func Login(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Signed in successfully", "data": t})
+	return c.Status(fiber.StatusOK).JSON(types.SignInSuccess(t))
 }
 
 func SignUp(c *fiber.Ctx) error {
@@ -80,13 +78,13 @@ func SignUp(c *fiber.Ctx) error {
 	result := db.Database.Where("email = ?", body.Email).First(&existingUser)
 
 	if result.RowsAffected > 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": "Email already in use"})
+		return c.Status(fiber.StatusBadRequest).JSON(types.EmailAlreadyInUse)
 	}
 
 	// Create a new user
 	hash, err := hashPassword(body.Password)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't hash password", "data": err})
+		return c.Status(500).JSON(types.HashError)
 	}
 
 	newUser := models.User{
@@ -97,15 +95,8 @@ func SignUp(c *fiber.Ctx) error {
 	}
 
 	if err := db.Database.Create(&newUser).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "error", "message": "Couldn't create user"})
+		return c.Status(fiber.StatusInternalServerError).JSON(types.UserCreationFailed)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "User created successfully"})
-}
-
-func GetUsers(c *fiber.Ctx) error {
-	var users []models.User
-	db.Database.Find(&users)
-
-	return c.JSON(fiber.Map{"status": "success", "message": "Users Found", "data": users})
+	return c.Status(fiber.StatusOK).JSON(types.UserCreationSuccess)
 }

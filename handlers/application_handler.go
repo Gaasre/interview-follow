@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"interview-follow/db"
 	"interview-follow/middleware"
 	"interview-follow/models"
+	"interview-follow/types"
 	"interview-follow/validation"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,10 +29,10 @@ func DeleteApplication(c *fiber.Ctx) error {
 	result := db.Database.Delete(&models.Application{}, "id = ?", id)
 
 	if result.RowsAffected == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": fmt.Sprintf("Cannot find application with id: %s", id)})
+		return c.Status(fiber.StatusBadRequest).JSON(types.ApplicationNotFound(id))
 	}
 
-	return c.JSON(fiber.Map{"status": "success", "message": "Application deleted successfully"})
+	return c.JSON(types.ApplicationDeleteSuccess)
 }
 
 func EditApplication(c *fiber.Ctx) error {
@@ -44,7 +44,7 @@ func EditApplication(c *fiber.Ctx) error {
 	result := db.Database.First(&application, "id = ?", id)
 
 	if result.RowsAffected == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": fmt.Sprintf("Cannot find application with id: %s", id)})
+		return c.Status(fiber.StatusBadRequest).JSON(types.ApplicationNotFound(id))
 	}
 
 	application.Company = body.Company
@@ -53,7 +53,7 @@ func EditApplication(c *fiber.Ctx) error {
 
 	db.Database.Save(&application)
 
-	return c.JSON(fiber.Map{"status": "success", "message": "Application updated successfully", "data": models.GetApplicationResponse(application)})
+	return c.JSON(types.ApplicationSuccess(models.GetApplicationResponse(application)))
 }
 
 func NewApplication(c *fiber.Ctx) error {
@@ -70,10 +70,10 @@ func NewApplication(c *fiber.Ctx) error {
 	}
 
 	if err := db.Database.Create(&newApplication).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"status": "error", "message": "Couldn't create application"})
+		return c.Status(fiber.StatusInternalServerError).JSON(types.ApplicationCreateFailed)
 	}
 
-	return c.JSON(fiber.Map{"status": "success", "message": "Application created successfully", "data": models.GetApplicationResponse(newApplication)})
+	return c.JSON(types.ApplicationSuccess(models.GetApplicationResponse(newApplication)))
 }
 
 func GetAllApplications(c *fiber.Ctx) error {

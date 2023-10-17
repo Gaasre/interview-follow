@@ -5,6 +5,7 @@ import (
 	"interview-follow/config"
 	"interview-follow/db"
 	"interview-follow/models"
+	"interview-follow/types"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,7 +21,7 @@ func DeserializeUser(c *fiber.Ctx) error {
 	}
 
 	if token == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "failed", "message": "You are not authorized"})
+		return c.Status(fiber.StatusUnauthorized).JSON(types.Unauthorized)
 	}
 
 	tokenByte, err := jwt.Parse(token, func(jwtToken *jwt.Token) (interface{}, error) {
@@ -32,19 +33,19 @@ func DeserializeUser(c *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "fail", "message": "Invalidate token"})
+		return c.Status(fiber.StatusUnauthorized).JSON(types.InvalidateToken)
 	}
 
 	claims, ok := tokenByte.Claims.(jwt.MapClaims)
 	if !ok || !tokenByte.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "fail", "message": "Invalid token claim"})
+		return c.Status(fiber.StatusUnauthorized).JSON(types.InvalidTokenClaim)
 	}
 
 	var user models.User
 	db.Database.First(&user, "id = ?", fmt.Sprint(claims["user_id"]))
 
 	if user.Id != claims["user_id"] {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"status": "fail", "message": "The user belonging to this token no logger exists"})
+		return c.Status(fiber.StatusForbidden).JSON(types.InvalidUser)
 	}
 
 	c.Locals("user", models.FilterPassword(user))
