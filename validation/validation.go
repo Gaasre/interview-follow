@@ -1,7 +1,9 @@
 package validation
 
 import (
+	"fmt"
 	"interview-follow/models"
+	"interview-follow/types"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -33,10 +35,22 @@ func ValidateBody[T any](c *fiber.Ctx, payload T) error {
 	err := validate.Struct(payload)
 	if err != nil {
 		errors = ErrorMap(err, errors)
-		return c.Status(fiber.StatusBadRequest).JSON(errors)
+		return c.Status(fiber.StatusBadRequest).JSON(types.ApiResponse{
+			Status:  "failed",
+			Message: ErrorsToString(errors),
+			Data:    errors,
+		})
 	}
 
 	return c.Next()
+}
+
+func ErrorsToString(errors []*ValidationError) string {
+	strErrors := ""
+	for _, error := range errors {
+		strErrors += fmt.Sprintf("-%s Invalid\n", error.Field)
+	}
+	return strErrors
 }
 
 func ValidateLogin(c *fiber.Ctx) error {
