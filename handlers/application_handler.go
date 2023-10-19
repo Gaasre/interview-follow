@@ -79,5 +79,5 @@ func NewApplication(c *fiber.Ctx) error {
 func GetAllApplications(c *fiber.Ctx) error {
 	user := c.Locals("user").(models.UserResponse)
 	model := db.Database.Where("user_id = ?", user.Id).Model(&models.Application{})
-	return c.JSON(pg.With(model).Request(c.Request()).Response(&[]models.ApplicationResponse{}))
+	return c.JSON(types.ApplicationSuccess(pg.With(model).Request(c.Request()).Response(&[]models.ApplicationResponse{})))
 }

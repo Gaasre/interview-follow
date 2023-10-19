@@ -13,7 +13,7 @@ type ApiResponse struct {
 
 // APPLICATION
 
-func ApplicationSuccess(application models.ApplicationResponse) ApiResponse {
+func ApplicationSuccess(application interface{}) ApiResponse {
 	return ApiResponse{
 		Status: "success",
 		Data:   application,
