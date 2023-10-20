@@ -50,6 +50,7 @@ func EditApplication(c *fiber.Ctx) error {
 	application.Company = body.Company
 	application.Description = body.Description
 	application.Title = body.Title
+	application.Link = body.Link
 
 	db.Database.Save(&application)
 
@@ -66,6 +67,7 @@ func NewApplication(c *fiber.Ctx) error {
 		Title:       body.Title,
 		Description: body.Description,
 		Company:     body.Company,
+		Link:        body.Link,
 		UserId:      user.Id,
 	}
 
