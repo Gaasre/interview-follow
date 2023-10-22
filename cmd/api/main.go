@@ -2,6 +2,7 @@ package main
 
 import (
 	"interview-follow/db"
+	"interview-follow/openai"
 	"interview-follow/router"
 	"log"
 	"os"
@@ -27,6 +28,7 @@ func main() {
 
 	// Connect to DB
 	db.Init()
+	openai.InitOpenAI()
 
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{

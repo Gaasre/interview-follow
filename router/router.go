@@ -10,6 +10,7 @@ import (
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api", logger.New())
 
+	route.SetupMailRoutes(api)
 	route.SetupUserRoutes(api)
 	route.SetupApplicationRoutes(api)
 }
