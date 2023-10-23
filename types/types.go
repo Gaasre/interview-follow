@@ -11,9 +11,30 @@ type ApiResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+// INTERVIEW
+
+func InterviewSuccess(interview interface{}) ApiResponse {
+	return ApiResponse{
+		Status: "success",
+		Data:   interview,
+	}
+}
+
+func InterviewNotFound(id string) ApiResponse {
+	return ApiResponse{
+		Status:  "failed",
+		Message: fmt.Sprintf("Cannot find interview with id: %s", id),
+	}
+}
+
 var InterviewCreateFailed = ApiResponse{
 	Status:  "failed",
 	Message: "Couldn't create interview",
+}
+
+var InterviewDeleteSuccess = ApiResponse{
+	Status:  "failed",
+	Message: "Interview deleted successfully",
 }
 
 // APPLICATION
@@ -27,7 +48,7 @@ func ApplicationSuccess(application interface{}) ApiResponse {
 
 func ApplicationNotFound(id string) ApiResponse {
 	return ApiResponse{
-		Status:  "success",
+		Status:  "failed",
 		Message: fmt.Sprintf("Cannot find application with id: %s", id),
 	}
 }

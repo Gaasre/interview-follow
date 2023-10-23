@@ -13,4 +13,5 @@ func SetupRoutes(app *fiber.App) {
 	route.SetupMailRoutes(api)
 	route.SetupUserRoutes(api)
 	route.SetupApplicationRoutes(api)
+	route.SetupInterviewRoutes(api)
 }

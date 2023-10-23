@@ -14,10 +14,10 @@ type Interview struct {
 }
 
 type InterviewRequest struct {
-	Date  time.Time `validate:"required"`
-	Type  string    `validate:"required"`
-	Email string    `validate:"required"`
-	Link  string    `validate:"required"`
+	Date  string `validate:"required"`
+	Type  string `validate:"required"`
+	Email string `validate:"required"`
+	Link  string `validate:"required"`
 }
 
 type InterviewResponse struct {

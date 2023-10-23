@@ -5,14 +5,12 @@ import (
 	"interview-follow/middleware"
 	"interview-follow/models"
 	"interview-follow/types"
+	"interview-follow/utils"
 	"interview-follow/validation"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/morkid/paginate"
 )
-
-var pg = paginate.New()
 
 func SetupApplicationRoutes(router fiber.Router) {
 	application := router.Group("application")
@@ -83,5 +81,5 @@ func NewApplication(c *fiber.Ctx) error {
 func GetAllApplications(c *fiber.Ctx) error {
 	user := c.Locals("user").(models.UserResponse)
 	model := db.Database.Where("user_id = ?", user.Id).Model(&models.Application{})
-	return c.JSON(types.ApplicationSuccess(pg.With(model).Request(c.Request()).Response(&[]models.ApplicationResponse{})))
+	return c.JSON(types.ApplicationSuccess(utils.Pg.With(model).Request(c.Request()).Response(&[]models.ApplicationResponse{})))
 }

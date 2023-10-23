@@ -68,3 +68,11 @@ func ValidateNewApplication(c *fiber.Ctx) error {
 func ValidateEditApplication(c *fiber.Ctx) error {
 	return ValidateBody(c, new(models.ApplicationRequest))
 }
+
+func ValidateNewInterview(c *fiber.Ctx) error {
+	return ValidateBody(c, new(models.InterviewRequest))
+}
+
+func ValidateEditInterview(c *fiber.Ctx) error {
+	return ValidateBody(c, new(models.InterviewRequest))
+}
