@@ -19,6 +19,7 @@ type Mail struct {
 	Body    string `json:"body"`
 }
 
+// TODO: This is just a test. Need to move it to email interception
 func SetupMailRoutes(router fiber.Router) {
 	mail := router.Group("mail")
 
