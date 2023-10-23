@@ -6,6 +6,7 @@ type Application struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Link        string `json:"link"`
+	Stage       string `json:"stage"`
 	UserId      string `json:"userid"`
 	User        User   `json:"user" gorm:"foreignKey:UserId"`
 }
@@ -15,6 +16,7 @@ type ApplicationRequest struct {
 	Title       string `validate:"required"`
 	Description string `validate:"required"`
 	Link        string `validate:"required,url"`
+	Stage       string `validate:"required"`
 }
 
 type ApplicationResponse struct {
@@ -22,6 +24,7 @@ type ApplicationResponse struct {
 	Company     string `json:"company"`
 	Title       string `json:"title"`
 	Link        string `json:"link"`
+	Stage       string `json:"stage"`
 	Description string `json:"description"`
 }
 
@@ -32,5 +35,6 @@ func GetApplicationResponse(application Application) ApplicationResponse {
 		Title:       application.Title,
 		Link:        application.Link,
 		Description: application.Description,
+		Stage:       application.Stage,
 	}
 }

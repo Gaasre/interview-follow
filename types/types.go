@@ -11,6 +11,11 @@ type ApiResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+var InterviewCreateFailed = ApiResponse{
+	Status:  "failed",
+	Message: "Couldn't create interview",
+}
+
 // APPLICATION
 
 func ApplicationSuccess(application interface{}) ApiResponse {
@@ -28,8 +33,13 @@ func ApplicationNotFound(id string) ApiResponse {
 }
 
 var ApplicationDeleteSuccess = ApiResponse{
-	Status:  "failed",
+	Status:  "success",
 	Message: "Application deleted successfully",
+}
+
+var ApplicationUpdatedSuccess = ApiResponse{
+	Status:  "success",
+	Message: "Application updated successfully",
 }
 
 var ApplicationCreateFailed = ApiResponse{
